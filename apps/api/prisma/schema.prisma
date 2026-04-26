@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id               String   @id @default(cuid())
+  title            String
+  company          String?
+  location         String?
+  experienceMin    Int?
+  experienceMax    Int?
+  skills           String[] @default([])
+  requirements     String[] @default([])
+  responsibilities String[] @default([])
+  rawText          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  screenings Screening[]
+
+  @@index([createdAt])
+}
+
+model Candidate {
+  id              String   @id @default(cuid())
+  name            String
+  email           String?
+  phone           String?
+  location        String?
+  experienceYears Float?
+  skills          String[] @default([])
+  education       String[] @default([])
+  workHistory     String[] @default([])
+  rawText         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  screenings Screening[]
+
+  @@index([createdAt])
+  @@index([email])
+}
+
+enum ScreeningStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum Recommendation {
+  strong_match
+  possible_match
+  weak_match
+}
+
+model Screening {
+  id          String          @id @default(cuid())
+  jobId       String
+  candidateId String
+  status      ScreeningStatus @default(pending)
+
+  overallScore          Float?
+  skillMatchScore       Float?
+  experienceMatchScore  Float?
+  locationMatchScore    Float?
+  educationMatchScore   Float?
+
+  matchedSkills    String[] @default([])
+  missingSkills    String[] @default([])
+  strengths        String[] @default([])
+  risks            String[] @default([])
+  recruiterSummary String?
+  recommendation   Recommendation?
+
+  errorMessage String?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, createdAt])
+  @@index([candidateId, createdAt])
+  @@index([status])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([entityType, entityId])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  label     String
+  hash      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

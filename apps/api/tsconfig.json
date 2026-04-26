@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@ats/shared": ["../../packages/shared/src/index.ts"],
+      "@ats/llm": ["../../packages/llm/src/index.ts"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "prisma/seed.ts",
+    "../../packages/shared/src/**/*",
+    "../../packages/llm/src/**/*"
+  ],
+  "exclude": ["**/*.test.ts", "**/__tests__/**"]
+}

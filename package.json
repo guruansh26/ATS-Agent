@@ -1,0 +1,28 @@
+{
+  "name": "ats-ai-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered ATS screening and candidate matching agent for recruiters.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:api": "npm --workspace @ats/api run dev",
+    "dev:worker": "npm --workspace @ats/worker run dev",
+    "dev:web": "npm --workspace @ats/web run dev",
+    "db:generate": "npm --workspace @ats/api run prisma:generate",
+    "db:migrate": "npm --workspace @ats/api run prisma:migrate",
+    "db:seed": "npm --workspace @ats/api run db:seed"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
